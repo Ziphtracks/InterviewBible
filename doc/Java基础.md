@@ -167,4 +167,137 @@
 >     - 然后用equals比较这两种的时候那就是返回false了
 > - **注意：**== 比equals的运行速度要快，因为只是比较的单纯地址
 >
-> 重写equals方法的例子请[点击链接](https://github.com/Ziphtracks/JavaLearningmanual/blob/master/docs/Java-Standard-Edition/Java%E5%86%85%E9%83%A8%E7%B1%BB%E4%B8%8E%E5%B8%B8%E7%94%A8%E7%B1%BB.md#314-%E9%87%8D%E5%86%99equals%E6%96%B9%E6%B3%95%E6%80%9D%E6%83%B3%E4%BE%8B%E5%AD%90)
+> 如果还不理解，请参考重写equals方法的例子，请[点击链接](https://github.com/Ziphtracks/JavaLearningmanual/blob/master/docs/Java-Standard-Edition/Java%E5%86%85%E9%83%A8%E7%B1%BB%E4%B8%8E%E5%B8%B8%E7%94%A8%E7%B1%BB.md#314-%E9%87%8D%E5%86%99equals%E6%96%B9%E6%B3%95%E6%80%9D%E6%83%B3%E4%BE%8B%E5%AD%90)阅读！
+
+
+
+## 16. 面试官：你重写过 hashcode 和equals么，为什么重写equals时必须重写 hashCode 方法？
+
+> - **hashCode方法的作用和特点** 
+> - hashCode方法的作用：是获取哈希码，也称为散列码；它实际上是返回一个int整数。这个哈希码的作用是确定该对象在哈希表中的索引位置。hashCode()定义在JDK的Object.java中，这就意味着Java中的任何类都包含有hashCode()函数。
+> - hashCode方法的特点：散列表存储的是键值对(key-value)，能根据“键”快速的检索出对应 的“值”。这其中就利用到了散列码！（可以快速找到所需要的对象）
+
+> - **为什么要有hashCode** 
+> - 我们以“HashSet 如何检查重复”为例子来说明为什么要有 hashCode：
+> - 当你把对象加入 HashSet 时，HashSet 会先计算对象的 hashcode 值来判断 对象加入的位置，同时也会与其他已经加入的对象的 hashcode 值作比较，如 果没有相符的 hashcode，HashSet 会假设对象没有重复出现。但是如果发现有 相同 hashcode 值的对象，这时会调用 equals（）方法来检查 hashcode 相 等的对象是否真的相同。如果两者相同，HashSet 就不会让其加入操作成功。 如果不同的话，就会重新散列到其他位置。这样我们就大大减少了 equals 的次数，相应就大大提高了执行速度。
+
+> **hashCode与equals方法的规定** 
+>
+> - 如果两个对象相等，则 hashcode 一定也是相同的
+> - 两个对象相等，对两个对象分别调用 equals 方法都返回 true
+> - 两个对象有相同的 hashcode 值，它们也不一定是相等的
+> - *因此，重写 equals 方法，则必须重写 hashCode 方法* 
+> - **注意：** hashCode() 的默认行为是对堆上的对象产生独特值。如果没有重写 hashCode()，则该 class 的两个对象无论如何都不会相等（即使这两个对象指向相同的地址和数据）
+
+
+
+## 17. 面试官：说说你对final关键字的了解
+
+> final 关键字主要用在三个地方：变量、方法、类
+>
+> 1. 对于一个 final 变量，如果是基本数据类型的变量，则其数值一旦在初始化之后便不能更改；如果是引用类型的变量，则在对其初始化之后便不能再让其指向另一个对象。
+> 2. 当用 final 修饰一个类时，表明这个类不能被继承。final 类中的所有成员 方法都会被隐式地指定为 final 方法。
+> 3. 使用 final 方法的原因有两个。第一个原因是把方法锁定，以防任何继承 类修改它的含义；第二个原因是效率。在早期的 Java 实现版本中，会将 final 方法转为内嵌调用。但是如果方法过于庞大，可能看不到内嵌调用 带来的任何性能提升（现在的 Java 版本已经不需要使用 final 方法进行 这些优化了）。类中所有的 private 方法都隐式地指定为 final。
+
+
+
+## 18. 面试官：说说你对程序、线程、进程的理解，它们之间有什么关系
+
+> **线程：** 线程与进程相似，但线程是一个比进程更小的执行单位。一个进程在其执行的 过程中可以产生多个线程。与进程不同的是同类的多个线程共享同一块内存空 间和一组系统资源，所以系统在产生一个线程，或是在各个线程之间作切换工 作时，负担要比进程小得多，也正因为如此，线程也被称为轻量级进程。
+>
+> **程序：** 程序是含有指令和数据的文件，被存储在磁盘或其他的数据存储设备中，也就 是说程序是静态的代码。
+>
+> **进程：** 进程是程序的一次执行过程，是系统运行程序的基本单位，因此进程是动态的。系统运行一个程序即是一个进程从创建，运行到消亡的过程。简单来说， 一个进程就是一个执行中的程序，它在计算机中一个指令接着一个指令地执行着，同时，每个进程还占有某些系统资源如：CPU时间片、内存空间、文件、输入输出设备的使用权等等。换句话说，当程序在执行时，将会被操作系统载入内存中。 线程是进程划分成的更小的运行单位。线程和进程最大的不同在于基本上各进程是独立的，而各线程则不一定，因为同一进程中的线程极有可能会相互影响。从另一角度来说，进程属于操作系统的范畴，主要是同一段时间内，可以同时执行一个以上的程序，而线程则是在同一程序内几乎同时执 行一个以上的程序段。
+
+
+
+## 19. 面试官：线程的基本状态有哪几种？你知道它们的流程是怎么样的吗？
+
+|                        线程的基本状态                        |
+| :----------------------------------------------------------: |
+| ![image-20200824212635500](https://gitee.com/Ziphtracks/Figurebed/raw/master/img/2/20200824212909.png) |
+|                           **等待**                           |
+| ![image-20200824212738574](https://gitee.com/Ziphtracks/Figurebed/raw/master/img/2/20200824212905.png) |
+|                           **阻塞**                           |
+| ![image-20200824212840560](https://gitee.com/Ziphtracks/Figurebed/raw/master/img/2/20200824212902.png) |
+
+
+
+## 20. 面试官：你对Java中异常处理机制了解多少，可以和我聊聊吗？
+
+|                         Java异常类图                         |
+| :----------------------------------------------------------: |
+| ![image-20200824202505928](https://gitee.com/Ziphtracks/Figurebed/raw/master/img/2/20200824212847.png) |
+
+> 在 Java 中，所有的异常都有一个共同的祖先 java.lang 包中的 Throwable 类。
+>
+> Throwable： 有两个重要的子类，即，Exception（异常） 和 Error（错误），二者都是 Java 异常处理的重要子类，各自都包含大量子类。
+>
+> Error（错误）：是程序无法处理的错误，表示运行应用程序中较严重问题。大多数错误与代码编写者执行的操作无关，而表示代码运行时 JVM（Java 虚拟机）出现的问题。例如，Java 虚拟机运行错误（Virtual MachineError），当 JVM 不再有继续执行操作所需的内存资源时，将出现 OutOfMemoryError。这些异常发生时，Java 虚拟机（JVM）一般会选择线程终止。 这些错误表示故障发生于虚拟机自身、或者发生在虚拟机试图执行应用时，如 Java 虚拟机运行错误（Virtual MachineError）、类定义错误 （NoClassDefFoundError）等。这些错误是不可查的，因为它们在应用程序的控制和处理能力之外，而且绝大多数是程序运行时不允许出现的状况。对于设计合理的应用程序来说，即使确实发生了错误，本质上也不应该试图去处理它所引起的异常状况。在 Java 中，错误通过 Error 的子类描述。
+>
+> Exception（异常）：是程序本身可以处理的异常。Exception 类有一个重要的子类 RuntimeException。RuntimeException 异常由 Java 虚拟机抛出。
+>
+> **注意：** 异常和错误的区别为 异常能被程序本身可以处理，而错误是无法处理。
+
+
+
+## 21. 面试官：说说你开发中遇到的错误和异常有哪些？
+
+> 温馨提示：以下异常选择几种即可，如果你的开发经验比较好，对栈内存溢出排查（StackOverflowError）和内存不足调优和参数设置等（OutOfMemoryException，简称OOM）比较擅长，完全可以拿出你的长处好好发挥。因为这里水比较深，如果不了解的并不建议你聊这两个！
+
+| Name                                                    | Desc                                      |
+| ------------------------------------------------------- | ----------------------------------------- |
+| java.lang.NullPointerException（空指针异常）            | 调用了未经初始化的对象或者是不存在的对象  |
+| java.lang.ClassNotFoundException（类文件未找到异常）    | 指定的类不存在                            |
+| java.lang.ClassCastException（类型转换异常）            | 多态时，强制类型转换不匹配，不能转换      |
+| java.lang.NumberFormatException（数字转换异常）         | 字符串转换为数字异常                      |
+| java.lang.IndexOutOfBoundsException（数组下标越界异常） | 访问数组的下标超过了界限                  |
+| java.lang.IllegalArgumentException（方法参数错误异常）  | 方法调用时传递的参数发生了错误            |
+| java.lang.IllegalAccessException（权限不足异常）        | 调用访问的时权限不满足                    |
+| java.lang.ArithmeticException（算术异常）               | 算术运算时出现的异常，比如除以0           |
+| java.lang.FileNotFoundException（文件未找到异常）       | 试图打开一个文件，但找不到指定文件        |
+| java.lang.ArrayStoreException（数组存储异常）           | 将不兼容类型的对象存入Object[]数组将引发  |
+| java.lang.NoSuchMethodException（方法不存在异常）       | 反射读取访问，但指定的方法不存在          |
+| java.lang.EOFException（文件已结束异常）                | 输入的过程中，文件或流提前关闭可导致      |
+| java.lang.InstantiationException（实例化异常）          | 反射创建实例时，程序无法通过构造来创建时  |
+| java.lang.InterruptedException（被终止异常）            | Thread的interrupt方法终止线程时抛出该异常 |
+| java.lang.CloneNotSupportedException（不支持克隆异常）  | 不支持克隆方法时，调用clone()方法时抛出   |
+| java.lang.NoClassDefFoundException（未找到类定义异常）  | JVM或类加载实例化类时，但找不到类的定义   |
+| java.lang.OutOfMemoryException（内存不足异常）          | 当内存不足时，JVM继续分配对象时抛出       |
+
+
+
+## 22. 面试官：Java中异常处理是怎么处理的？需要注意什么？
+
+> try 块：用于捕获异常。其后可接零个或多个 catch 块，如果没有 catch 块，则必须跟一个 finally 块。
+>
+> catch 块：用于处理 try 捕获到的异常。
+>
+> finally 块：无论是否捕获或处理异常，finally 块里的语句都会被执行。 当在 try 块或 catch 块中遇到 return 语句时，finally 语句块将在方法返回之前被执行。这样保证了执行肯定会执行到finally块中的数据，常用于关闭资源等
+>
+> - **在以下 4 种特殊情况下，finally 块不会被执行：** 
+>   - 在 finally 语句块中发生了异常
+>   - 在前面的代码中用了 System.exit()退出程序
+>   - 程序所在的线程死亡
+>   - 关闭CPU处理
+>
+> - **需要注意的两个点：** 
+>   - 尽量不要捕获类似Exception这样的通用异常，而是应该捕获特定异常，在这里是Thread.sleep()抛出的InterruptedException。
+>     - 解释：我们有义务让自己的代码能够直观地体现出尽量多的信息，而泛泛 的Exception之类，恰恰隐藏了我们的目的。另外，我们也要保证程序不会捕获到我们不希望捕获的异常。比如，你可能更希望RuntimeException被扩散出来，而不是被捕获。
+>   - 不要生吞（swallow）异常。这是异常处理中要特别注意的事情，因为很可能会导致非常难以诊断的诡异情况。
+>     - 解释：生吞异常，往往是基于假设这段代码可能不会发生，或者感觉忽略异常是无所谓的。如果我们不把异常抛出来，或者也没有输出到日志（Logger）之类，程序可能在后续代码以不可控的方式结束。没人能够轻易判断究竟是哪里抛出了异常，以及是什么原因产生了异 常。
+>   - try-catch会引起很大的性能开销，不要随便使用异常进行流程控制
+>     - 解释1：try-catch代码段会产生额外的性能开销，或者换个角度说，它往往会影响JVM对代码进行优化，所以建议仅捕获有必要的代码段，尽量不要一个大的try包住整段的代码；与此同 时，利用异常控制代码流程，也不是一个好主意，远比我们通常意义上的条件语句（if/else、switch）要低效。
+>     - 解释2：Java每实例化一个Exception，都会对当时的栈进行快照，这是一个相对比较重的操作。如果发生的非常频繁，这个开销可就不能被忽略了
+
+
+
+## 23. 面试官：说说final、finally和finalize的区别
+
+> 首先，final、finally和finalize没有任何关系，只是在单词拼写上非常相似而已！
+>
+> final：final关键字的解释请参考第十七题（17）
+>
+> finally：finally关键字的解释请参考第二十二题（22）
+>
+> finalize：finalize()是在java.lang.Object里定义的，也就是说每一个对象都有这么个方法。这个方法在gc启动，该对象被回收的时候被调用。其实gc可以回收大部分的对象（凡是new出来的对象，gc都能搞定，一般情况下我们又不会用new以外的方式去创建对象），所以一般是不需要程序员去实现finalize的。 
