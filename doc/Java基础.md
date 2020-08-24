@@ -1,5 +1,7 @@
 # 📕Java基础面试题
 
+> 该面试题中不涉及集合与并发编程内容，我会将这两部分内容划分成两个板块讲解！
+
 ------
 
 ## 1. 面试官：看你大学中也学过C语言是吧！你来说说C语言和Java语言有什么不同和优缺点！
@@ -213,6 +215,8 @@
 
 ## 19. 面试官：线程的基本状态有哪几种？你知道它们的流程是怎么样的吗？
 
+> 创建状态 -> 就绪状态 -> 运行状态 -> 阻塞状态 -> 死亡状态
+
 |                        线程的基本状态                        |
 | :----------------------------------------------------------: |
 | ![image-20200824212635500](https://gitee.com/Ziphtracks/Figurebed/raw/master/img/2/20200824212909.png) |
@@ -296,8 +300,61 @@
 
 > 首先，final、finally和finalize没有任何关系，只是在单词拼写上非常相似而已！
 >
-> final：final关键字的解释请参考第十七题（17）
+> final：final用于声明属性、方法和类，分别表示属性不可变、方法不可重写（覆盖）和类不可继承
 >
-> finally：finally关键字的解释请参考第二十二题（22）
+> finally：finally表示异常处理结果的一部分，常与try块和catch块联用，finally块的内容表示不管有没有异常都会被执行，除非虚拟机停止工作或者执行`System.exit(1);`强制关闭
 >
 > finalize：finalize()是在java.lang.Object里定义的，也就是说每一个对象都有这么个方法。这个方法在gc启动，该对象被回收的时候被调用。其实gc可以回收大部分的对象（凡是new出来的对象，gc都能搞定，一般情况下我们又不会用new以外的方式去创建对象），所以一般是不需要程序员去实现finalize的。 
+
+
+
+## 24. 面试官：StringBuffer和StringBuilder的区别是什么？String为什么不可变？
+
+> 简单的来说：String 类中使用 final 关键字字符数组保存字符串，`private final char value[]`，所以 String 对象是不可变的。而 StringBuilder 与 StringBuffer 都继承自 AbstractStringBuilder 类，在 AbstractStringBuilder 中 也是使用字符数组保存字符串 char[]value 但是没有用 final 关键字修饰，所以 这两种对象都是可变的。
+>
+> StringBuilder 与 StringBuffer 的构造方法都是调用父类构造方法也就是 AbstractStringBuilder 实现的，大家可以自行查阅源码。
+
+```java
+abstract class AbstractStringBuilder implements Appendable, CharSequence {
+	char[] value;
+	int count;
+	AbstractStringBuilder() {
+    
+	}
+	AbstractStringBuilder(int capacity) {
+		value = new char[capacity];
+	}
+
+	......
+}
+```
+
+> - **线程安全问题** 
+> - String 中的对象是不可变的，也就可以理解为常量，线程安全。
+> - AbstractStringBuilder 是 StringBuilder 与 StringBuffer 的公共父类，定义了 一些字符串的基本操作，如 expandCapacity、append、insert、indexOf 等公 共方法。StringBuffer 对方法加了同步锁或者对调用的方法加了同步锁，所以 是线程安全的。StringBuilder 并没有对方法进行加同步锁，所以是非线程安全 的。
+
+> - **性能问题** 
+> - 每次对 String 类型进行改变的时候，都会生成一个新的 String 对象，然后将 指针指向新的 String 对象。StringBuffer 每次都会对 StringBuffer 对象本身进行操作，而不是生成新的对象并改变对象引用。相同情况下使用StringBuilder 相比使用 StringBuffer 仅能获得 10%~15% 左右的性能提升， 但却要冒多线程不安全的风险。
+
+> - **总结：** 
+> - 操作少量的数据——String
+> - 单线程操作字符串缓冲区下操作大量数据——StringBuilder（线程不安全）
+> - 多线程操作字符串缓冲区下操作大量数据——StringBuffer（线程安全）
+
+
+
+## 25. 面试官：逻辑运算符&和&&的区别
+
+> &和&&都可用作逻辑与的运算符，表示逻辑与（and），当运算符两边的表达式都为true时，整个运算符结果才为true。否则，只要有一方为false，则结果就为false。
+>
+> &&作为短路与，即如果第一个表达式为false，则不再执行另一个表示式，而是直接返回false。
+>
+> &作为位运算符，当&操作符两边的表达式不是boolean类型时，&表示按位与操作。（简单来说也就是机器码1和0之间的与关系）
+
+
+
+## 26. 面试官：聊聊Java中Comparable和Comparator的区别
+
+> - Comparable接口中可以实现一个compareTo方法来执行排序规则，主要用于创建对象的大小关系，该对象实现comparable接口，当`a.compareTo(b) > 0`时，则a>b；当`a.compareTo(b) < 0`时，则a<b。
+>
+> - Comparator接口中可以实现一个compare方法来进行排序，compare方法内主要靠定义compareTo规定的对象大小关系来确定对象的大小
