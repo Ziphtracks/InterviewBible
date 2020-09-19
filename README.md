@@ -21,8 +21,6 @@
 
 **邮箱：** ziphtracks@163.com
 
-**QQ：** 896988359（请注明来意）
-
 **微信公众号：** 【码出Offer】（微信公众号内可添加微信）
 
 **Java体系学习：** 如需体系的学习Java知识、领取读者福利等，请点击上方*蓝色徽章* 或 [点击链接](https://github.com/Ziphtracks/JavaLearningmanual)学习阅读！
